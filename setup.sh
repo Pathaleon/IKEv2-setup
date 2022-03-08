@@ -101,7 +101,6 @@ done
 
 VPNIPPOOL="172.20.10.0/26"
 
-
 echo
 echo "--- Upgrading and installing packages ---"
 echo
@@ -113,7 +112,6 @@ debconf-set-selections <<< "postfix postfix/mailname string ${VPNHOST}"
 debconf-set-selections <<< "postfix postfix/main_mailer_type string 'Internet Site'"
 
 apt-get -o Acquire::ForceIPv4=true install -y language-pack-en strongswan libstrongswan-standard-plugins strongswan-libcharon libcharon-standard-plugins libcharon-extra-plugins  iptables-persistent postfix mutt unattended-upgrades certbot uuid-runtime
-
 
 echo
 echo "--- Configuring firewall ---"
@@ -150,7 +148,6 @@ iptables -I INPUT -i "${ETH0ORSIMILAR}" -m state --state NEW -m recent --update 
 # accept (non-standard) SSH
 iptables -A INPUT -p tcp --dport "${SSHPORT}" -j ACCEPT
 
-
 # VPN
 
 # accept IPSec/NAT-T for VPN (ESP not needed with forceencaps, as ESP goes inside UDP)
@@ -177,7 +174,6 @@ iptables -A FORWARD -j DROP
 iptables -L
 
 netfilter-persistent save
-
 
 echo
 echo "--- Configuring RSA certificates ---"
@@ -544,4 +540,3 @@ echo "Connection instructions can also be found in your home directory, /home/${
 # necessary for IKEv2?
 # Windows: https://support.microsoft.com/en-us/kb/926179
 # HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\PolicyAgent += AssumeUDPEncapsulationContextOnSendRule, DWORD = 2
-
