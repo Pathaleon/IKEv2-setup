@@ -212,7 +212,7 @@ post-hook = /sbin/iptables -D INPUT -p tcp --dport 80 -j ACCEPT
 renew-hook = /usr/sbin/ipsec reload && /usr/sbin/ipsec secrets
 ' > /etc/letsencrypt/cli.ini
 
-certbot certonly --non-interactive --agree-tos --standalone --preferred-challenges http --email "${EMAILADDR}" -d "${VPNHOST}"
+certbot certonly --non-interactive --agree-tos --standalone --preferred-challenges dns --email "${EMAILADDR}" -d "${VPNHOST}"
 
 ln -f -s "/etc/letsencrypt/live/${VPNHOST}/cert.pem"    /etc/ipsec.d/certs/cert.pem
 ln -f -s "/etc/letsencrypt/live/${VPNHOST}/privkey.pem" /etc/ipsec.d/private/privkey.pem
@@ -411,6 +411,10 @@ cat << EOF > vpn-ios-or-mac.mobileconfig
         <true/>
         <key>ExtendedAuthEnabled</key>
         <true/>
+        <key>AuthName</key>
+        <string>${VPNUSERNAME}</string>
+        <key>AuthPassword</key>
+        <string>${VPNPASSWORD}</string>
         <key>IKESecurityAssociationParameters</key>
         <dict>
           <key>EncryptionAlgorithm</key>
@@ -568,7 +572,6 @@ cat << EOF > vpn-instructions.txt
 
 A configuration profile is attached as vpn-ios-or-mac.mobileconfig — simply open this to install. You will be asked for your device PIN or password, and your VPN username and password, not necessarily in that order.
 
-
 == Windows ==
 
 You will need Windows 10 Pro or above. Please run the following commands in PowerShell:
@@ -599,28 +602,12 @@ Set-VpnConnection -Name "${VPNHOST}" -SplitTunneling \$True
 
 You will need to enter your chosen VPN username and password in order to connect.
 
-
-== Android ==
-
-Download the strongSwan app from the Play Store: https://play.google.com/store/apps/details?id=org.strongswan.android
-
-Then open the attached .sswan file, or select it after choosing 'Import VPN profile' from the strongSwan app menu. You will need to enter your chosen VPN username and password in order to connect.
-
-For a persistent connection, go to your device's Settings app and choose Network & Internet > Advanced > VPN > strongSwan VPN Client, tap the gear icon and toggle on 'Always-on VPN' (these options may differ by Android version and provider).
-
-
-== Ubuntu ==
-
-A bash script to set up strongSwan as a VPN client is attached as vpn-ubuntu-client.sh. You will need to chmod +x and then run the script as root.
-
 EOF
-
-EMAIL=$USER@$VPNHOST mutt -s "VPN configuration" -a vpn-ios-or-mac.mobileconfig vpn-android.sswan vpn-ubuntu-client.sh -- "${EMAILADDR}" < vpn-instructions.txt
 
 echo
 echo "--- How to connect ---"
 echo
-echo "Connection instructions have been emailed to you, and can also be found in your home directory, /home/${LOGINUSERNAME}"
+echo "Connection instructions can also be found in your home directory, /home/${LOGINUSERNAME}"
 
 # necessary for IKEv2?
 # Windows: https://support.microsoft.com/en-us/kb/926179
