@@ -5,7 +5,7 @@
 # Released under the MIT licence: http://opensource.org/licenses/mit-license
 
 echo
-echo "=== https://github.com/jawj/IKEv2-setup ==="
+echo "=== Fork of https://github.com/jawj/IKEv2-setup ==="
 echo
 
 
@@ -66,36 +66,15 @@ while true; do
   echo "Passwords didn't match -- please try again"
 done
 
-echo '
-Public DNS servers include:
-
-176.103.130.130,176.103.130.131  AdGuard               https://adguard.com/en/adguard-dns/overview.html
-176.103.130.132,176.103.130.134  AdGuard Family        https://adguard.com/en/adguard-dns/overview.html
-1.1.1.1,1.0.0.1                  Cloudflare/APNIC      https://1.1.1.1
-84.200.69.80,84.200.70.40        DNS.WATCH             https://dns.watch
-8.8.8.8,8.8.4.4                  Google                https://developers.google.com/speed/public-dns/
-208.67.222.222,208.67.220.220    OpenDNS               https://www.opendns.com
-208.67.222.123,208.67.220.123    OpenDNS FamilyShield  https://www.opendns.com
-9.9.9.9,149.112.112.112          Quad9                 https://quad9.net
-77.88.8.8,77.88.8.1              Yandex                https://dns.yandex.com
-77.88.8.88,77.88.8.2             Yandex Safe           https://dns.yandex.com
-77.88.8.7,77.88.8.3              Yandex Family         https://dns.yandex.com
-'
-
-read -r -p "DNS servers for VPN users (default: 1.1.1.1,1.0.0.1): " VPNDNS
-VPNDNS=${VPNDNS:-'1.1.1.1,1.0.0.1'}
-
-
 echo
 echo "--- Configuration: general server settings ---"
 echo
-
-read -r -p "Timezone (default: Europe/London): " TZONE
+echo "Setting VPN DNS to one.one.one.one"
+VPNDNS=${VPNDNS:-'1.1.1.1,1.0.0.1'}
+echo "Setting Timezone to Europe/London)"
 TZONE=${TZONE:-'Europe/London'}
-
 read -r -p "Email address for sysadmin (e.g. j.bloggs@example.com): " EMAILADDR
-
-read -r -p "Desired SSH log-in port (default: 22): " SSHPORT
+echo "Setting SSH Port to 22"
 SSHPORT=${SSHPORT:-22}
 
 read -r -p "New SSH log-in user name: " LOGINUSERNAME
@@ -120,7 +99,7 @@ while true; do
   echo "Passwords didn't match -- please try again"
 done
 
-VPNIPPOOL="10.101.0.0/16"
+VPNIPPOOL="172.20.10.0/26"
 
 
 echo
