@@ -259,7 +259,6 @@ echo "--- Timezone, unattended upgrades ---"
 echo
 
 timedatectl set-timezone "${TZONE}"
-/usr/sbin/update-locale LANG=en_GB.UTF-8
 
 sed -r \
 -e 's|^//Unattended-Upgrade::MinimalSteps "true";$|Unattended-Upgrade::MinimalSteps "true";|' \
