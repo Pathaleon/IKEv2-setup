@@ -63,7 +63,7 @@ Configuration files, scripts and instructions are sent by email. They are also d
 
 4. On your new server installation, become `root`, download the script, give it execute permissions, and run it:
 
-       wget https://raw.githubusercontent.com/jawj/IKEv2-setup/master/setup.sh
+       wget https://raw.githubusercontent.com/pathaleon/IKEv2-setup/master/setup.sh
        chmod u+x setup.sh
        ./setup.sh
     
