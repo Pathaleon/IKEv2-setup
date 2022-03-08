@@ -291,22 +291,8 @@ ipsec restart
 
 
 echo
-echo "--- User ---"
+echo "--- SSH ---"
 echo
-
-# user + SSH
-
-id -u "${LOGINUSERNAME}" &>/dev/null || adduser --disabled-password --gecos "" "${LOGINUSERNAME}"
-echo "${LOGINUSERNAME}:${LOGINPASSWORD}" | chpasswd
-adduser "${LOGINUSERNAME}" sudo
-
-sed -r \
--e "s/^#?Port 22$/Port ${SSHPORT}/" \
--e 's/^#?LoginGraceTime (120|2m)$/LoginGraceTime 30/' \
--e 's/^#?PermitRootLogin yes$/PermitRootLogin no/' \
--e 's/^#?X11Forwarding yes$/X11Forwarding no/' \
--e 's/^#?UsePAM yes$/UsePAM no/' \
--i.original /etc/ssh/sshd_config
 
 grep -Fq 'jawj/IKEv2-setup' /etc/ssh/sshd_config || echo "
 # https://github.com/jawj/IKEv2-setup
@@ -314,45 +300,12 @@ MaxStartups 1
 MaxAuthTries 2
 UseDNS no" >> /etc/ssh/sshd_config
 
-if [[ $CERTLOGIN = "y" ]]; then
-  mkdir -p "/home/${LOGINUSERNAME}/.ssh"
-  chown "${LOGINUSERNAME}" "/home/${LOGINUSERNAME}/.ssh"
-  chmod 700 "/home/${LOGINUSERNAME}/.ssh"
-
-  cp "/root/.ssh/authorized_keys" "/home/${LOGINUSERNAME}/.ssh/authorized_keys"
-  chown "${LOGINUSERNAME}" "/home/${LOGINUSERNAME}/.ssh/authorized_keys"
-  chmod 600 "/home/${LOGINUSERNAME}/.ssh/authorized_keys"
-
-  sed -r \
-  -e "s/^#?PasswordAuthentication yes$/PasswordAuthentication no/" \
-  -i.allows_pwd /etc/ssh/sshd_config
-fi
-
-service ssh restart
-
-
 echo
-echo "--- Timezone, mail, unattended upgrades ---"
+echo "--- Timezone, unattended upgrades ---"
 echo
 
 timedatectl set-timezone "${TZONE}"
 /usr/sbin/update-locale LANG=en_GB.UTF-8
-
-
-sed -r \
--e "s/^myhostname =.*$/myhostname = ${VPNHOST}/" \
--e 's/^inet_interfaces =.*$/inet_interfaces = loopback-only/' \
--i.original /etc/postfix/main.cf
-
-grep -Fq 'jawj/IKEv2-setup' /etc/aliases || echo "
-# https://github.com/jawj/IKEv2-setup
-root: ${EMAILADDR}
-${LOGINUSERNAME}: ${EMAILADDR}
-" >> /etc/aliases
-
-newaliases
-service postfix restart
-
 
 sed -r \
 -e 's|^//Unattended-Upgrade::MinimalSteps "true";$|Unattended-Upgrade::MinimalSteps "true";|' \
