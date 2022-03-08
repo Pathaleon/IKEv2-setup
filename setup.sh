@@ -76,29 +76,7 @@ TZONE=${TZONE:-'Europe/London'}
 read -r -p "Email address for sysadmin (e.g. j.bloggs@example.com): " EMAILADDR
 echo "Setting SSH Port to 22"
 SSHPORT=${SSHPORT:-22}
-
-read -r -p "New SSH log-in user name: " LOGINUSERNAME
-
-CERTLOGIN="n"
-if [[ -s /root/.ssh/authorized_keys ]]; then
-  while true; do
-    read -r -p "Copy /root/.ssh/authorized_keys to new user and disable SSH password log-in [Y/n]? " CERTLOGIN
-    [[ ${CERTLOGIN,,} =~ ^(y(es)?)?$ ]] && CERTLOGIN=y
-    [[ ${CERTLOGIN,,} =~ ^no?$ ]] && CERTLOGIN=n
-    [[ $CERTLOGIN =~ ^(y|n)$ ]] && break
-  done
-fi
-
-while true; do
-  [[ ${CERTLOGIN} = "y" ]] && read -r -s -p "New SSH user's password (e.g. for sudo): " LOGINPASSWORD
-  [[ ${CERTLOGIN} != "y" ]] && read -r -s -p "New SSH user's log-in password (must be REALLY STRONG): " LOGINPASSWORD
-  echo
-  read -r -s -p "Confirm new SSH user's password: " LOGINPASSWORD2
-  echo
-  [[ "${LOGINPASSWORD}" = "${LOGINPASSWORD2}" ]] && break
-  echo "Passwords didn't match -- please try again"
-done
-
+echo "Setting VPN IP Pool to 172.20.10.0/26"
 VPNIPPOOL="172.20.10.0/26"
 
 echo
@@ -355,7 +333,7 @@ cat << EOF > vpn-ios-or-mac.mobileconfig
           <integer>1440</integer>
         </dict>
         <key>OnDemandEnabled</key>
-        <integer>1</integer>
+        <integer>0</integer>
         <key>OnDemandRules</key>
         <array>
           <dict>
@@ -395,15 +373,15 @@ cat << EOF > vpn-ios-or-mac.mobileconfig
         <integer>0</integer>
       </dict>
       <key>UserDefinedName</key>
-      <string>${VPNHOST}</string>
+      <string>${VPNDISPNAME}</string>
       <key>VPNType</key>
       <string>IKEv2</string>
     </dict>
   </array>
   <key>PayloadDisplayName</key>
-  <string>IKEv2 VPN configuration (${VPNHOST})</string>
+  <string>IKEv2 VPN configuration | ${VPNDISPNAME}</string>
   <key>PayloadIdentifier</key>
-  <string>com.mackerron.vpn.$(uuidgen)</string>
+  <string>com.pathaleon.vpn.$(uuidgen)</string>
   <key>PayloadRemovalDisallowed</key>
   <false/>
   <key>PayloadType</key>
