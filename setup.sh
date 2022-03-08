@@ -78,7 +78,7 @@ echo "Setting SSH Port to 22"
 SSHPORT=${SSHPORT:-22}
 echo "Setting VPN IP Pool to 172.20.10.0/26"
 VPNIPPOOL="172.20.10.0/26"
-read -r -p "Enter name for VPN Configuration Profile iOS/macOS" VPNDISPNAME
+read -r -p "Enter name for VPN Configuration Profile iOS/macOS: " VPNDISPNAME
 
 echo
 echo "--- Upgrading and installing packages ---"
